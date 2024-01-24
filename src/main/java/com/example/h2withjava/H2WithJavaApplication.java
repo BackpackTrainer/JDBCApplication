@@ -28,15 +28,46 @@ public class H2WithJavaApplication {
 
         createRegistrationTable();
 
-        addDataToRegistrationTable();
+        //addDataToRegistrationTable();
 
-        retrieveDataFromRegistrationTable();
+//        retrieveDataFromRegistrationTable();
+//
+//        updateAndRetrieveDataFromRegistration();
+//
+//        retrieveDataFromEmployees();
+//
+//        retrieveDataFromEmployeesWithTableJoin();
 
-        updateAndRetrieveDataFromRegistration();
+        demoLittleBobbyTables();
+    }
 
-        retrieveDataFromEmployees();
+    private static void demoLittleBobbyTables() {
 
-        retrieveDataFromEmployeesWithTableJoin();
+        try (Connection conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
+             Statement stmt = conn.createStatement();){
+
+            String name = "Bobby'; drop table REGISTRATION; set @tmp='gotcha";
+
+//            String sql = "select * from REGISTRATION where first='%s'".formatted(name);
+
+//            try (ResultSet rs = stmt.executeQuery(sql)) {
+//                while (rs.next()) {
+//                    System.out.println(rs.getString(1));
+//                }
+//            }
+            String psSql = "select * from REGISTRATION where first=?";
+            try (PreparedStatement ps = conn.prepareStatement(psSql)) {
+                ps.setString(1, name);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    System.out.println(rs.getString(1));
+                }
+            }
+
+
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     private static void createRegistrationTable() {
